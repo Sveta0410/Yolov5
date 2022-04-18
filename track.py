@@ -20,7 +20,7 @@ import torch
 import torch.backends.cudnn as cudnn
 
 import psycopg2
-import time
+import datetime
 
 from yolov5.models.experimental import attempt_load
 from yolov5.utils.downloads import attempt_download
@@ -195,7 +195,7 @@ def detect(opt):
                             info['accuracy%s' % id] = 0
                             info['time%s' % id] = 0
                             all_id.append(int(id))
-
+                            print(time_sync())
                         info['accuracy%s' % id] += float(conf_slice)
                         info['time%s' % id] += 1
 
