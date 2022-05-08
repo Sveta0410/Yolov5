@@ -39,7 +39,7 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-conn = psycopg2.connect(database="yolov5", user="postgres", password="123", host="localhost", port="5432")
+conn = psycopg2.connect(database="yolo_db", user="postgres", password="123", host="localhost", port="5432")
 cursor = conn.cursor()
 
 all_id = []
@@ -194,11 +194,12 @@ def detect(opt):
                             info['name%s' % id] = names[c]
                             info['accuracy%s' % id] = 0
                             info['time%s' % id] = 0
+                            info['time_ent_%s' % id] = str(datetime.datetime.now().strftime("%H:%M:%S"))
                             all_id.append(int(id))
                             print(time_sync())
                         info['accuracy%s' % id] += float(conf_slice)
                         info['time%s' % id] += 1
-
+                        info['time_out_%s' % id] = str(datetime.datetime.now().strftime("%H:%M:%S"))
                         # print(info)
 
 
@@ -263,8 +264,10 @@ def detect(opt):
         name = str(info['name%s' % i])
         time_in = str(info['time%s' % i])
         accuracy = str(info['accuracy%s' % i])
-        cursor.execute('INSERT INTO main1.info (number, fight_fall, time, average_accuracy) VALUES (%s, %s, %s, %s);',
-                       (number, name, time_in, accuracy))
+        time_ent = str(info['time_ent_%s' % i])
+        time_out = str(info['time_out_%s' % i])
+        cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
+                       'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
         conn.commit()
 
 
