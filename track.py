@@ -222,7 +222,8 @@ def detect(opt):
             # Stream results
             im0 = annotator.result()
             if show_vid:
-                cv2.imshow(str(p), im0)
+                im1 = cv2.resize(im0, (960, 540))
+                cv2.imshow('result', im1)
                 if cv2.waitKey(1) == ord('q'):  # q to quit
                     raise StopIteration
 
