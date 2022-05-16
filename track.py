@@ -1,5 +1,8 @@
 # limit the number of cpus used by high performance libraries
+from add_to_db import add_to_db
+
 import os
+
 os.environ["OMP_NUM_THREADS"] = "1"
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
 os.environ["MKL_NUM_THREADS"] = "1"
@@ -7,6 +10,7 @@ os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
 os.environ["NUMEXPR_NUM_THREADS"] = "1"
 
 import sys
+
 sys.path.insert(0, './yolov5')
 
 import argparse
@@ -26,7 +30,7 @@ from yolov5.models.experimental import attempt_load
 from yolov5.utils.downloads import attempt_download
 from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.datasets import LoadImages, LoadStreams
-from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, scale_coords, 
+from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, scale_coords,
                                   check_imshow, xyxy2xywh, increment_path)
 from yolov5.utils.torch_utils import select_device, time_sync
 from yolov5.utils.plots import Annotator, colors
@@ -45,8 +49,9 @@ cursor = conn.cursor()
 all_id = []
 info = dict()
 
+
 def detect(opt):
-    out, source, yolo_model, deep_sort_model, show_vid, save_vid, save_txt, imgsz, evaluate, half, project, name, exist_ok= \
+    out, source, yolo_model, deep_sort_model, show_vid, save_vid, save_txt, imgsz, evaluate, half, project, name, exist_ok = \
         opt.output, opt.source, opt.yolo_model, opt.deep_sort_model, opt.show_vid, opt.save_vid, \
         opt.save_txt, opt.imgsz, opt.evaluate, opt.half, opt.project, opt.name, opt.exist_ok
     webcam = source == '0' or source.startswith(
@@ -141,7 +146,8 @@ def detect(opt):
         dt[1] += t3 - t2
 
         # Apply NMS
-        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, opt.classes, opt.agnostic_nms, max_det=opt.max_det)
+        pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, opt.classes, opt.agnostic_nms,
+                                   max_det=opt.max_det)
         dt[2] += time_sync() - t3
 
         # Process detections
@@ -149,7 +155,7 @@ def detect(opt):
             seen += 1
             if webcam:  # batch_size >= 1
                 p, im0, _ = path[i], im0s[i].copy(), dataset.count
-                s += f'{i}: '
+                s += '{}: '.format(i)
             else:
                 p, im0, _ = path, im0s.copy(), getattr(dataset, 'frame', 0)
 
@@ -167,7 +173,7 @@ def detect(opt):
                 # Print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                    s += "{} {}{}, ".format(n, names[int(c)], 's' * (n > 1))  # add to string
 
                 xywhs = xyxy2xywh(det[:, 0:4])
                 confs = det[:, 4]
@@ -187,7 +193,7 @@ def detect(opt):
                         cls = output[5]
 
                         c = int(cls)  # integer class
-                        label = f'{id} {names[c]} {conf:.2f}'
+                        label = '{} {} {:.2f}'.format(id, names[c], conf)
                         conf_slice = str(conf)[7: 14]
                         annotator.box_label(bboxes, label, color=(0, 0, 0, 0))
                         if id not in all_id:
@@ -202,7 +208,6 @@ def detect(opt):
                         info['time_out_%s' % id] = str(datetime.datetime.now().strftime("%H:%M:%S"))
                         # print(info)
 
-
                         if save_txt:
                             # to MOT format
                             bbox_left = output[0]
@@ -214,7 +219,7 @@ def detect(opt):
                                 f.write(('%g ' * 10 + '\n') % (frame_idx + 1, id, bbox_left,  # MOT format
                                                                bbox_top, bbox_w, bbox_h, -1, -1, -1, -1))
 
-                LOGGER.info(f'{s}Done. YOLO:({t3 - t2:.3f}s), DeepSort:({t5 - t4:.3f}s)')
+                LOGGER.info('{}Done. YOLO:({:.3f}s), DeepSort:({:.3f}s)'.format(s, t3 - t2, t5 - t4))
 
             else:
                 deepsort.increment_ages()
@@ -246,8 +251,12 @@ def detect(opt):
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
-    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
-        per image at shape {(1, 3, *imgsz)}' % t)
+    a = 'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
+        per image at shape {}'.format((1, 3, *imgsz))
+
+    LOGGER.info(a % t)
+    # LOGGER.info('Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
+    # per image at shape {}'.format((1, 3, *imgsz)) % t)
     if save_txt or save_vid:
         print('Results saved to %s' % save_path)
         if platform == 'darwin':  # MacOS
@@ -255,20 +264,33 @@ def detect(opt):
     print('_____________________________')
     print(info)
     print("i, info['name%s' % i], info['accuracy%s' % i], info['time%s' % i]")
+    add_to_db(info, all_id)
+#    for i in all_id:
+#        info['accuracy%s' % i] = info['accuracy%s' % i] / (info['time%s' % i])
+#        info['time%s' % i] = (info['time%s' % i]) / 30
+#        print(i, info['name%s' % i], info['accuracy%s' % i], info['time%s' % i])
+#        number = str(i)
+#        name = str(info['name%s' % i])
+#        time_in = str(info['time%s' % i])
+#        accuracy = str(info['accuracy%s' % i])
+#        time_ent = str(info['time_ent_%s' % i])
+#        time_out = str(info['time_out_%s' % i])
+#        cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
+#                       'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
+#        conn.commit()
 
-    for i in all_id:
-        info['accuracy%s' % i] = info['accuracy%s' % i]/(info['time%s' % i])
-        info['time%s' % i] = (info['time%s' % i]) / 30
-        print(i,  info['name%s' % i], info['accuracy%s' % i], info['time%s' % i])
-        number = str(i)
-        name = str(info['name%s' % i])
-        time_in = str(info['time%s' % i])
-        accuracy = str(info['accuracy%s' % i])
-        time_ent = str(info['time_ent_%s' % i])
-        time_out = str(info['time_out_%s' % i])
-        cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
-                       'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
-        conn.commit()
+
+# def add_to_db(info):
+#     for i in all_id:
+#         info['accuracy%s' % i] = info['accuracy%s' % i] / (info['time%s' % i])
+#         number = str(i)
+#         name = str(info['name%s' % i])
+#         accuracy = str(info['accuracy%s' % i])
+#         time_ent = str(info['time_ent_%s' % i])
+#         time_out = str(info['time_out_%s' % i])
+#         print(number, name, time_ent, time_out, accuracy)
+#         print(info)
+
 
 
 if __name__ == '__main__':
