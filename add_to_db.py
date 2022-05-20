@@ -20,8 +20,12 @@ def add_to_db(inf, all_id):
         print(number, name, time_ent, time_out, accuracy)
         add.append([number, name, time_ent, time_out, accuracy])
         print(add)
-        #  print(inf)
-        #        cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
-        #                       'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
-        #        conn.commit()
+
+        try:
+            cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
+                              'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
+            conn.commit()
+        except:
+            pass
+
     return add
