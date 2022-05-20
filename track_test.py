@@ -44,3 +44,6 @@ def test_name():
     i = 1
     name1 = str(inf['name%s' % i])
     assert name1 == 'fight'
+    assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
+    assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
+
