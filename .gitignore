@@ -1,4 +1,5 @@
 *.ts
+playlist.m3u8
 
 .vscode/
 
