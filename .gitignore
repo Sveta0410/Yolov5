@@ -1,7 +1,5 @@
 *.ts
-playlist.m3u8
-gstr/playlist.m3u8
-
+*.m3u8
 .vscode/
 
 .venv
