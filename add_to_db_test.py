@@ -8,11 +8,7 @@ def test_insert_1():
            'time_ent_3': '10:57:21', 'time_out_3': '10:57:21'}
     all_id = [1, 2, 3]
     add_to_db(inf, all_id)
-
-    i = 1
-
     assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
-    assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
 
 
 def test_insert_2():
@@ -22,11 +18,6 @@ def test_insert_2():
            'time_ent_3': '10:57:21', 'time_out_3': '10:57:21'}
     all_id = [1, 2, 3]
     add_to_db(inf, all_id)
-
-    i = 1
-    name1 = str(inf['name%s' % i])
-    assert name1 == 'fight'
-    assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
     assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
 
 
@@ -45,9 +36,5 @@ def test_insert_3():
            'time15': 3, 'time_ent_15': '10:58:44', 'time_out_15': '10:58:45'}
     all_id = [1, 2, 3, 4, 7, 9, 11, 12, 13]
     add_to_db(inf, all_id)
-
-    i = 1
-    name1 = str(inf['name%s' % i])
-    assert name1 == 'fight'
     assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
     assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
