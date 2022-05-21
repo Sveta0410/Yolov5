@@ -191,7 +191,6 @@ def detect(opt):
                         bboxes = output[0:4]
                         id = output[4]
                         cls = output[5]
-
                         c = int(cls)  # integer class
                         label = '{} {} {:.2f}'.format(id, names[c], conf)
                         conf_slice = str(conf)[7: 14]
@@ -202,11 +201,10 @@ def detect(opt):
                             info['time%s' % id] = 0
                             info['time_ent_%s' % id] = str(datetime.datetime.now().strftime("%H:%M:%S"))
                             all_id.append(int(id))
-                            print(time_sync())
+
                         info['accuracy%s' % id] += float(conf_slice)
                         info['time%s' % id] += 1
                         info['time_out_%s' % id] = str(datetime.datetime.now().strftime("%H:%M:%S"))
-                        # print(info)
 
                         if save_txt:
                             # to MOT format
@@ -265,32 +263,6 @@ def detect(opt):
     print(info)
     print("i, info['name%s' % i], info['accuracy%s' % i], info['time%s' % i]")
     add_to_db(info, all_id)
-#    for i in all_id:
-#        info['accuracy%s' % i] = info['accuracy%s' % i] / (info['time%s' % i])
-#        info['time%s' % i] = (info['time%s' % i]) / 30
-#        print(i, info['name%s' % i], info['accuracy%s' % i], info['time%s' % i])
-#        number = str(i)
-#        name = str(info['name%s' % i])
-#        time_in = str(info['time%s' % i])
-#        accuracy = str(info['accuracy%s' % i])
-#        time_ent = str(info['time_ent_%s' % i])
-#        time_out = str(info['time_out_%s' % i])
-#        cursor.execute('INSERT INTO main.info (number, fight_fall, time_ent, time_out, average_accuracy) '
-#                       'VALUES (%s, %s, %s, %s, %s);', (number, name, time_ent, time_out, accuracy))
-#        conn.commit()
-
-
-# def add_to_db(info):
-#     for i in all_id:
-#         info['accuracy%s' % i] = info['accuracy%s' % i] / (info['time%s' % i])
-#         number = str(i)
-#         name = str(info['name%s' % i])
-#         accuracy = str(info['accuracy%s' % i])
-#         time_ent = str(info['time_ent_%s' % i])
-#         time_out = str(info['time_out_%s' % i])
-#         print(number, name, time_ent, time_out, accuracy)
-#         print(info)
-
 
 
 if __name__ == '__main__':
