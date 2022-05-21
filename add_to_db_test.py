@@ -1,31 +1,36 @@
-#from track import detect
-#import psycopg2
-
-#def test_smt():
-#    assert
-
-
-#def test_db_connection():
-#    assert psycopg2.connect(database="yolo_db", user="postgres", password="123", host="localhost", port="5432")
-
-def test_a():
-    assert 0 * 10 == 0
-
-
-# def test_b():
-#     try:
-#         conn = psycopg2.connect(database="yolo_db", user="postgres", password="123", host="localhost", port="5432")
-#         conn.close()
-#         return True
-#     except:
-#         return False
-
-import pytest
-
 from add_to_db import add_to_db
 
 
-def test_name():
+def test_insert_1():
+    inf = {'name1': 'fight', 'accuracy1': 13.397889999999999, 'time1': 16, 'time_ent_1': '10:57:08',
+           'time_out_1': '10:57:19', 'name2': 'fight', 'accuracy2': 74.86325999999995, 'time2': 91,
+           'time_ent_2': '10:57:08', 'time_out_2': '10:58:02', 'name3': 'fight', 'accuracy3': 1.45782, 'time3': 2,
+           'time_ent_3': '10:57:21', 'time_out_3': '10:57:21'}
+    all_id = [1, 2, 3]
+    add_to_db(inf, all_id)
+
+    i = 1
+
+    assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
+    assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
+
+
+def test_insert_2():
+    inf = {'name1': 'fight', 'accuracy1': 13.397889999999999, 'time1': 16, 'time_ent_1': '10:57:08',
+           'time_out_1': '10:57:19', 'name2': 'fight', 'accuracy2': 74.86325999999995, 'time2': 91,
+           'time_ent_2': '10:57:08', 'time_out_2': '10:58:02', 'name3': 'fight', 'accuracy3': 1.45782, 'time3': 2,
+           'time_ent_3': '10:57:21', 'time_out_3': '10:57:21'}
+    all_id = [1, 2, 3]
+    add_to_db(inf, all_id)
+
+    i = 1
+    name1 = str(inf['name%s' % i])
+    assert name1 == 'fight'
+    assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
+    assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
+
+
+def test_insert_3():
     inf = {'name1': 'fight', 'accuracy1': 13.397889999999999, 'time1': 16, 'time_ent_1': '10:57:08',
            'time_out_1': '10:57:19', 'name2': 'fight', 'accuracy2': 74.86325999999995, 'time2': 91,
            'time_ent_2': '10:57:08', 'time_out_2': '10:58:02', 'name3': 'fight', 'accuracy3': 1.45782, 'time3': 2,
@@ -46,4 +51,3 @@ def test_name():
     assert name1 == 'fight'
     assert add_to_db(inf, all_id)[0] == ['1', 'fight', '10:57:08', '10:57:19', '0.84']
     assert add_to_db(inf, all_id)[1] == ['2', 'fight', '10:57:08', '10:58:02', '0.82']
-
