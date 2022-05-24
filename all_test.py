@@ -1,7 +1,7 @@
 from add_to_db import add_to_db
 from fastapi.testclient import TestClient
 import sys
-sys.path.insert(1, '/media/sveta/1/Yolov5_DeepSort_Pytorch_copy/gstr')
+sys.path.append('/media/sveta/1/Yolov5_DeepSort_Pytorch_copy/gstr')
 from main import app
 
 
