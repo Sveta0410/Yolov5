@@ -1,4 +1,11 @@
 from add_to_db import add_to_db
+from fastapi.testclient import TestClient
+import sys
+sys.path.insert(1, '/media/sveta/1/Yolov5_DeepSort_Pytorch_copy/gstr')
+from main import app
+
+
+client = TestClient(app)
 
 
 def test_insert_1():
@@ -63,3 +70,8 @@ def test_insert_4():
            'time15': 3, 'time_ent_15': '10:58:44', 'time_out_15': '10:58:45'}
     all_id = [1, 2, 3, 4, 7, 9, 11, 12, 13, 15]
     assert add_to_db(inf, all_id)[9] == ['15', 'fight', '10:58:44', '10:58:45', '0.72']
+
+
+def test_read_main():
+    response = client.get("/")
+    assert response.status_code == 200
