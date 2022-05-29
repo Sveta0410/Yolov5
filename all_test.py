@@ -1,12 +1,27 @@
 from add_to_db import add_to_db
-from fastapi.testclient import TestClient
-import sys
-sys.path.append('/media/sveta/1/Yolov5_DeepSort_Pytorch_copy/gstr')
-from main import app
+
+import requests
+import subprocess
+import time
+
+a = subprocess.Popen('gnome-terminal -- python3 -m http.server 8080', shell=True)
+time.sleep(3)
 
 
-client = TestClient(app)
+def test_server_200():
+    res = requests.get('http://127.0.0.1:8080/')
+    assert res.status_code == 200
 
+
+def test_server_404():
+    res = requests.get('http://127.0.0.1:8080/smth')
+    assert res.status_code == 404
+
+
+def test_tracking():
+    result = subprocess.run('python track.py --source test.mp4 --yolo_model weights/best.pt', shell=True,
+                            stdout=subprocess.PIPE, encoding='utf-8')
+    assert result.returncode == 0
 
 def test_insert_1():
     inf = {'name1': 'fight', 'accuracy1': 13.397889999999999, 'time1': 16, 'time_ent_1': '10:57:08',
@@ -72,6 +87,3 @@ def test_insert_4():
     assert add_to_db(inf, all_id)[9] == ['15', 'fight', '10:58:44', '10:58:45', '0.72']
 
 
-def test_read_main():
-    response = client.get("/")
-    assert response.status_code == 200
