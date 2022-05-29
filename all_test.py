@@ -6,9 +6,7 @@ import requests
 import subprocess
 import time
 import signal
-# a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
-# time.sleep(3)
-# os.killpg(os.getpgid(a.pid), signal.SIGTERM)
+
 
 def test_server_200():
     a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
