@@ -10,7 +10,7 @@ import signal
 
 def test_server_200():
     a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
-    time.sleep(3)
+    time.sleep(1)
     res = requests.get('http://127.0.0.1:8080/')
     os.killpg(os.getpgid(a.pid), signal.SIGTERM)
     assert res.status_code == 200
@@ -18,7 +18,7 @@ def test_server_200():
 
 def test_server_404():
     a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
-    time.sleep(3)
+    time.sleep(1)
     res = requests.get('http://127.0.0.1:8080/smth')
     os.killpg(os.getpgid(a.pid), signal.SIGTERM)
     assert res.status_code == 404
