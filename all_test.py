@@ -9,23 +9,23 @@ import signal
 
 
 def test_server_200():
-    a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
+    a = subprocess.Popen('python3 -m http.server 9000', shell=True, preexec_fn=os.setsid)
     time.sleep(1)
-    res = requests.get('http://127.0.0.1:8080/')
+    res = requests.get('http://localhost:9000/')
     os.killpg(os.getpgid(a.pid), signal.SIGTERM)
     assert res.status_code == 200
 
 
 def test_server_404():
-    a = subprocess.Popen('python3 -m http.server 8080', shell=True, preexec_fn=os.setsid)
+    a = subprocess.Popen('python3 -m http.server 9000', shell=True, preexec_fn=os.setsid)
     time.sleep(1)
-    res = requests.get('http://127.0.0.1:8080/smth')
+    res = requests.get('http://localhost:9000/smth')
     os.killpg(os.getpgid(a.pid), signal.SIGTERM)
     assert res.status_code == 404
 
 
 def test_tracking():
-    result = subprocess.run('python track.py --source test.mp4 --yolo_model weights/best.pt', shell=True,
+    result = subprocess.run('python track0.py --source videos/test.mp4 --yolo_model weights/best.pt', shell=True,
                             stdout=subprocess.PIPE, encoding='utf-8')
     assert result.returncode == 0
 
