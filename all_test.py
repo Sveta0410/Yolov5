@@ -25,7 +25,7 @@ def test_server_404():
 
 
 def test_tracking():
-    result = subprocess.run('python track0.py --source videos/test.mp4 --yolo_model weights/best.pt', shell=True,
+    result = subprocess.run('python track.py --source videos/test.mp4 --yolo_model weights/best.pt', shell=True,
                             stdout=subprocess.PIPE, encoding='utf-8')
     assert result.returncode == 0
 
