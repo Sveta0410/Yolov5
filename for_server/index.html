@@ -1,14 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=utf-8 />
-<title>Results</title>
+  <meta charset=utf-8 />
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <title>Detecting</title>
   <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
 </head>
 <body>
-  <h1>Results of my work</h1>
 
-  <video-js id="video_id" class="vjs-default-skin" controls preload="auto" width="640" height="360">
+
+<div class="intro">
+    <div class="container">
+      <h1>Fights detection in progress:</h1>
+    </div>
+
+
+    <div class="pic">
+
+        <div class="please">
+            <video-js id="video_id" class="vjs-default-skin" controls preload="auto" width="640" height="360">
     <source src="http://localhost:9000/playlist.m3u8" type="application/x-mpegURL">
   </video-js>
   <script src="https://unpkg.com/video.js/dist/video.js"></script>
@@ -16,6 +27,11 @@
   <script>
     var player = videojs('video_id');
   </script>
-  
+        </div>
+
+    </div>
+
+
+</div>
 </body>
 </html>
