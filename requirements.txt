@@ -37,4 +37,3 @@ isort==4.3.21
 imageio
 
 psycopg2-binary
-flask
