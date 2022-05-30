@@ -1,5 +1,8 @@
 import psycopg2
 import time
+import os
+
+os.system('sudo -u postgres psql')
 
 while True:
     try:
