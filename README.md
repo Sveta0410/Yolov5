@@ -35,11 +35,15 @@ git clone https://github.com/DanilaBelskiy/Website_CV.git
 cd Website_CV
 docker-compose up
 ```
+
 Чтобы остановить сервер, в этой же директории вызываем 
 ```sh
 docker-compose stop
 ```
-
+Для повторного запуска контейнера необходимо выполнить команду
+```sh
+docker-compose start
+```
 ## Запуск тестов
 Тесты можно запустить командой
 
