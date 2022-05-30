@@ -8,8 +8,45 @@
 с реализованным сбором статистики в базу данных, с использованием фреймворка для передачи обработанных потоковых данных.
 
 
-pip install --upgrade pip
+## Установка и запуск
+Для запуска потребуется python v3.5+, postgreSQL
 
+#### Склонируйте репозиторий себе на компьютер, перейдите в директорию с ним и выполните установку необходимых модулей
+#
+```sh
+git clone https://github.com/DanilaBelskiy/Website_CV.git
+cd Website_CV
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+##### Запускаем приложение командой
+
+```sh
+python3 main.py 
+```
+
+#### После этого переходим по адресу http:/localhost:9000/ и наблюдаем результат
+
+## Запуск через docker-compose
+
+##### Склонируйте репозиторий себе на компьютер, перейдите в директорию с ним и выполните команду
+
+```sh
+git clone https://github.com/DanilaBelskiy/Website_CV.git
+cd Website_CV
+docker-compose up
+```
+Чтобы остановить сервер, в этой же директории вызываем 
+```sh
+docker-compose stop
+```
+
+## Запуск тестов
+##### Тесты можно запустить командой
+
+```sh
+python3 all_test.py
+```
 
 
 [//]: # (<div align="center">)
