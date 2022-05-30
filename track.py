@@ -1,5 +1,5 @@
+
 # limit the number of cpus used by high performance libraries
-from add_to_db import add_to_db
 
 import os
 
@@ -43,11 +43,25 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
 
-conn = psycopg2.connect(database="yolo_db", user="postgres", password="123", host="localhost", port="5432")
+if sys.argv[1] == '--docker':
+    while True:
+        try:
+            conn = psycopg2.connect(dbname="yolo_db", user="postgres", password="123", host="db", port="5432")
+            break
+        except:
+            time.sleep(1)
+            continue
+else:
+    conn = psycopg2.connect(database="yolo_db", user="postgres", password="123", host="localhost", port="5432")
+
+###
 cursor = conn.cursor()
 
 all_id = []
 info = dict()
+###
+
+from add_to_db import add_to_db
 
 
 def detect(opt):
@@ -57,6 +71,7 @@ def detect(opt):
     webcam = source == '0' or source.startswith(
         'rtsp') or source.startswith('http') or source.endswith('.txt')
 
+    ###
     device = select_device(opt.device)
     # initialize deepsort
     cfg = get_config()
@@ -70,6 +85,7 @@ def detect(opt):
 
     # Initialize
     half &= device.type != 'cpu'  # half precision only supported on CUDA
+    ###
 
     # The MOT16 evaluation runs multiple inference streams in parallel, each one writing to
     # its own .txt file. Hence, in that case, the output folder is not restored
@@ -91,7 +107,9 @@ def detect(opt):
     save_dir.mkdir(parents=True, exist_ok=True)  # make dir
 
     # Load model
+    ###
     device = select_device(device)
+    ###
     model = DetectMultiBackend(yolo_model, device=device, dnn=opt.dnn)
     stride, names, pt, jit, _ = model.stride, model.names, model.pt, model.jit, model.onnx
     imgsz = check_img_size(imgsz, s=stride)  # check image size
@@ -122,12 +140,15 @@ def detect(opt):
     # Get names and colors
     names = model.module.names if hasattr(model, 'module') else model.names
 
+    ###
     # extract what is in between the last '/' and last '.'
     txt_file_name = source.split('/')[-1].split('.')[0]
     txt_path = str(Path(save_dir)) + '/' + txt_file_name + '.txt'
 
     if pt and device.type != 'cpu':
         model(torch.zeros(1, 3, *imgsz).to(device).type_as(next(model.model.parameters())))  # warmup
+    ###
+
     dt, seen = [0.0, 0.0, 0.0, 0.0], 0
     for frame_idx, (path, img, im0s, vid_cap, s) in enumerate(dataset):
         t1 = time_sync()
@@ -217,6 +238,8 @@ def detect(opt):
                                 f.write(('%g ' * 10 + '\n') % (frame_idx + 1, id, bbox_left,  # MOT format
                                                                bbox_top, bbox_w, bbox_h, -1, -1, -1, -1))
 
+                if 'you_can_start_stream.txt' not in os.listdir('for_server'):
+                    os.system('touch for_server/you_can_start_stream.txt')
                 LOGGER.info('{}Done. YOLO:({:.3f}s), DeepSort:({:.3f}s)'.format(s, t3 - t2, t5 - t4))
 
             else:
@@ -249,6 +272,8 @@ def detect(opt):
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
+
+    ###
     a = 'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS, %.1fms deep sort update \
         per image at shape {}'.format((1, 3, *imgsz))
 
@@ -259,10 +284,11 @@ def detect(opt):
         print('Results saved to %s' % save_path)
         if platform == 'darwin':  # MacOS
             os.system('open ' + save_path)
-    print('_____________________________')
-    print(info)
-    print("i, info['name%s' % i], info['accuracy%s' % i], info['time%s' % i]")
+
     add_to_db(info, all_id)
+
+
+###
 
 
 if __name__ == '__main__':
@@ -292,6 +318,7 @@ if __name__ == '__main__':
     parser.add_argument('--project', default=ROOT / 'runs/track', help='save results to project/name')
     parser.add_argument('--name', default='exp', help='save results to project/name')
     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
+    parser.add_argument('--docker', action='store_true', help='docker or user call')
     opt = parser.parse_args()
     opt.imgsz *= 2 if len(opt.imgsz) == 1 else 1  # expand
 
